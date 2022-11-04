@@ -5,13 +5,29 @@ User = get_user_model()
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=100, unique=True)
-    color = models.CharField(max_length=16, unique=True) # изменить на hex-код
-    slug = models.SlugField(unique=True)
-    # может быть сделать автодобавление слага
+    name = models.CharField(max_length=200, unique=True)
+    color = models.CharField(max_length=7, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
 
     def __str__(self):
-        return self.title
+        return self.name
+
+
+class Ingredient(models.Model):
+    name = models.CharField(
+        'Название ингредиента',
+        max_length=200,
+        help_text='Название ингредиента',
+    )
+    measurement_unit = models.CharField(
+        'Единица измерения',
+        max_length=200,
+        help_text='Единица измерения',
+    )
+
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     """Модель рецептов."""
@@ -26,40 +42,61 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='Автор рецепта',
     )
-    title  = models.CharField(max_length=100)
-    # image = models.ImageField(
-    #     'Картинка',
-    #     upload_to='recipes/',
-    #     blank=True,  # убрать
-    # )
+    name = models.CharField(
+        'Название рецепта', max_length=100
+    )
+    image = models.ImageField(
+        'Изображение блюда',
+        upload_to='recipes/images/',
+    )
     text = models.TextField(
         'Текстовое описание рецепта',
         help_text='Введите текст рецепта',
     )
 
-    # ingredients = models.ForeignKey(
-        
-    tag = models.ForeignKey(
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='IngredientAmount',
+        related_name='recipes',
+        verbose_name='Ингредиенты',
+        help_text='Ингредиенты для рецепта',
+    )
+
+    tags = models.ManyToManyField(
         Tag,
-        blank=True,  # убрать
-        null=True,  # убрать
-        on_delete=models.SET_NULL,
         related_name='recipes',
         verbose_name='Тег',
         help_text='Метка, к которой будет относиться рецепт',
     )
-    time_cooking = models.TimeField(
+    cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
-        help_text='Время приготовления в минутах',       
-        auto_now=False,
-        auto_now_add=False,
+        help_text='Время приготовления в минутах',
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True,
     )
+    is_favorited = models.BooleanField(default=False)
+    is_in_shopping_cart = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
+class IngredientAmount(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient, on_delete=models.CASCADE,
+        related_name='recipe',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        # related_name='ingredient',
+        on_delete=models.CASCADE,
+    )
+    amount = models.PositiveSmallIntegerField(
+        'Количество',
+        help_text='Количество',
+    )
+
+    def __str__(self):
+        return f'{self.ingredient} {self.recipe}'
