@@ -1,5 +1,6 @@
-from csv import DictReader
+# from csv import DictReader
 import csv
+
 from django.core.management.base import BaseCommand
 
 from recipes.models import Ingredient
@@ -40,5 +41,5 @@ class Command(BaseCommand):
             _, created = Ingredient.objects.get_or_create(
                 name=row[0],
                 measurement_unit=row[1],
-                )
+            )
             # print(row)
