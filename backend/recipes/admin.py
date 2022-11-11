@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Ingredient, IngredientAmount, Recipe, Tag  # Subscribe
+from .models import Ingredient, IngredientAmount, Recipe, Tag
 
 
 class IngredientAmountInline(admin.TabularInline):
@@ -20,13 +20,25 @@ class RecipeAdmin(admin.ModelAdmin):
 
     show_tags.short_description = 'Теги'
 
-    list_display = ('pk', 'name', 'text', 'pub_date', 'author', 'show_tags')
-    search_fields = ('text',)
-    list_filter = ('pub_date',)
+    def count_favorites(self, obj):
+        return obj.favorites.count()
+
+    list_display = ('name', 'author', 'count_favorites', 'show_tags')
+    search_fields = ('name',)
+    list_filter = ('author', 'name', 'tags', 'pub_date',)
     empty_value_display = '-пусто-'
 
 
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'measurement_unit')
+    search_fields = ('name',)
+    list_filter = ('name',)
+
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'color')
+
+
 admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Tag)
-admin.site.register(Ingredient)
-# admin.site.register(Subscribe)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(Ingredient, IngredientAdmin)

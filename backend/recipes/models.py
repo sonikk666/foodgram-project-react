@@ -5,8 +5,19 @@ User = get_user_model()
 
 
 class Tag(models.Model):
+    ORANGE = '#FFA500'
+    GREEN = '##008000'
+    BLUE = '#0000FF'
+    RED = '#FF0000'
+
+    COLOR_CHOICES = [
+        (ORANGE, 'Оранжевый'),
+        (GREEN, 'Зелёный'),
+        (BLUE, 'Синий'),
+        (RED, 'Красный'),
+    ]
     name = models.CharField(max_length=200, unique=True)
-    color = models.CharField(max_length=7, unique=True)
+    color = models.CharField(max_length=7, unique=True, choices=COLOR_CHOICES)
     slug = models.SlugField(max_length=200, unique=True)
 
     def __str__(self):
@@ -31,11 +42,6 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     """Модель рецептов."""
-    class Meta:
-        ordering = ['-pub_date']
-        verbose_name = 'Рецепт'
-        verbose_name_plural = 'Рецепты'
-
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -76,8 +82,11 @@ class Recipe(models.Model):
         'Дата публикации',
         auto_now_add=True,
     )
-    is_favorited = models.BooleanField(default=False)
-    is_in_shopping_cart = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.name
@@ -90,7 +99,6 @@ class IngredientAmount(models.Model):
     )
     recipe = models.ForeignKey(
         Recipe,
-        # related_name='ingredient',
         on_delete=models.CASCADE,
     )
     amount = models.PositiveSmallIntegerField(
@@ -100,3 +108,43 @@ class IngredientAmount(models.Model):
 
     def __str__(self):
         return f'{self.ingredient} {self.recipe}'
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE,
+        related_name='favorites'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        verbose_name='Рецепт',
+        on_delete=models.CASCADE,
+        related_name='favorites',
+    )
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+
+
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shopping_cart',
+        verbose_name='Пользователь',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='shopping_cart',
+        verbose_name='Рецепт',
+    )
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'В корзине'
