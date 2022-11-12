@@ -45,8 +45,8 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: sonikk666/foodgram_backend:latest
-      - name: Push frontend to Docker Hub
-        uses: docker/build-push-action@v3
+      # - name: Push frontend to Docker Hub
+      #   uses: docker/build-push-action@v3
         # with:
         #   context: ./frontend/
         #   file: ./frontend/Dockerfile
