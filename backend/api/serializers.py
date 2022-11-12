@@ -102,7 +102,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     'Ингридиенты должны быть уникальными'
                 )
             ingredient_list.append(ingredient)
-            if int(ingredient_item['amount']) < 0:
+            if int(ingredient_item['amount']) <= 0:
                 raise serializers.ValidationError(
                     {
                         'ingredients': (
@@ -122,32 +122,21 @@ class RecipeSerializer(serializers.ModelSerializer):
             )
 
     def create(self, validated_data):
-
         image = validated_data.pop('image')
         tags_data = self.initial_data.get('tags')
         ingredients_data = validated_data.pop('ingredients')
-
         recipe = Recipe.objects.create(image=image, **validated_data)
-
         recipe.tags.set(tags_data)
         self.__create_ingredients(ingredients_data, recipe)
-
         return recipe
 
     def update(self, instance, validated_data):
-        instance.image = validated_data.get('image', instance.image)
-        instance.name = validated_data.get('name', instance.name)
-        instance.text = validated_data.get('text', instance.text)
-        instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time
-        )
         instance.tags.clear()
         tags_data = self.initial_data.get('tags')
         instance.tags.set(tags_data)
-        IngredientAmount.objects.filter(recipe=instance).all().delete()
-        self.__create_ingredients(validated_data.get('ingredients'), instance)
-        instance.save()
-        return instance
+        IngredientAmount.objects.filter(recipe=instance).delete()
+        self.__create_ingredients(validated_data.pop('ingredients'), instance)
+        return super().update(instance, validated_data)
 
 
 class CropRecipeSerializer(serializers.ModelSerializer):

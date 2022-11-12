@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Tag(models.Model):
     ORANGE = '#FFA500'
-    GREEN = '##008000'
+    GREEN = '#008000'
     BLUE = '#0000FF'
     RED = '#FF0000'
 

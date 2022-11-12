@@ -1,4 +1,3 @@
-# from csv import DictReader
 import csv
 
 from django.core.management.base import BaseCommand
@@ -29,11 +28,6 @@ class Command(BaseCommand):
 
         print("Data successfuly loading")
 
-        # for row in DictReader(open('../data/ingredients.csv')):
-        #     # ingredients = Ingredient(
-        #     #     name=row[0], measurement_unit=row[1],
-        #     # )
-        #     # ingredients.save()
         reader = csv.reader(open(
             '../data/ingredients.csv', newline='', encoding='utf-8'
         ))
@@ -42,4 +36,3 @@ class Command(BaseCommand):
                 name=row[0],
                 measurement_unit=row[1],
             )
-            # print(row)

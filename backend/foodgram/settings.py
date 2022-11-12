@@ -1,8 +1,12 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = '%iwgigxe@r_wvanf38+n)dd)p)#l7liyv2kt4q1ibfu8jon84o'
+SECRET_KEY = os.getenv('SECRET_KEY', default='%iwgigxe@r_wvanf38+n)dd)p)#l7liyv2kt4q1ibfu8jon84o')
 
 DEBUG = True
 
@@ -16,13 +20,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'recipes.apps.RecipesConfig',
-    'api.apps.ApiConfig',
-    'users.apps.UsersConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
+
+    'users.apps.UsersConfig',
+    'recipes.apps.RecipesConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -106,6 +111,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'PAGE_SIZE': 6,
+
 }
 
 DJOSER = {
@@ -124,10 +131,10 @@ DJOSER = {
     }
 }
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         }
-#     }
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
