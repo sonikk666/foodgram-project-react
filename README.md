@@ -30,19 +30,19 @@ DB_PORT=5432 # порт для подключения к БД
 
 ```bash
 # Запуск docker-compose в фоновом режиме
-docker-compose up -d
+docker compose up -d
 # Миграции
-docker-compose exec backend python manage.py migrate
+docker compose exec backend python manage.py migrate
 # Создайте своего суперюзера
-docker-compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py createsuperuser
 # Подгрузка статики
-docker-compose exec backend python manage.py collectstatic --no-input
+docker compose exec backend python manage.py collectstatic --no-input
 # Копируем файл с тестовой базой в контейнер
 docker cp db.json nikita-backend-1:/app/
 # Заполние базы данных
-docker-compose exec backend python manage.py loaddata db.json
+docker compose exec backend python manage.py loaddata db.json
 # Для остановки контейнеров воспользуйтесь командой
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Описание эндпоинтов
