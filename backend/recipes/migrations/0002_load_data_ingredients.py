@@ -8,7 +8,7 @@ from django.db import migrations
 
 from recipes.models import Ingredient
 
-PATH = os.path.join(settings.BASE_DIR, '..\\data\\ingredients.json')
+PATH = os.path.join(settings.BASE_DIR, 'data/ingredients.json')
 
 
 class Migration(migrations.Migration):
