@@ -37,10 +37,8 @@ docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py createsuperuser
 # Подгрузка статики
 docker compose exec backend python manage.py collectstatic --no-input
-# Копируем файл с тестовой базой в контейнер
-docker cp db.json nikita-backend-1:/app/
 # Заполние базы данных
-docker compose exec backend python manage.py loaddata ../data/db.json
+docker compose exec backend python manage.py loaddata data/db.json
 # Для остановки контейнеров воспользуйтесь командой
 docker compose down -v
 ```

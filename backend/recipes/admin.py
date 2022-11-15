@@ -17,8 +17,12 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def show_tags(self, recipe):
         # Вывод тегов в админке
-        tags = Recipe.objects.values_list('tags__name', flat=True)
-        return list(tags)
+        tags = ' #'.join(
+            Recipe.objects.values_list(
+                'tags__name', flat=True
+            ).filter(name=recipe.name)
+        )
+        return f'#{tags}'
 
     show_tags.short_description = 'Теги'
 
