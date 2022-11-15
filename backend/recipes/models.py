@@ -3,22 +3,23 @@ from django.db import models
 
 User = get_user_model()
 
+COLOR_CHOICES = [
+    ('#FFA500', 'Оранжевый'),
+    ('#008000', 'Зелёный'),
+    ('#0000FF', 'Синий'),
+    ('#FF0000', 'Красный'),
+]
+
 
 class Tag(models.Model):
-    ORANGE = '#FFA500'
-    GREEN = '#008000'
-    BLUE = '#0000FF'
-    RED = '#FF0000'
-
-    COLOR_CHOICES = [
-        (ORANGE, 'Оранжевый'),
-        (GREEN, 'Зелёный'),
-        (BLUE, 'Синий'),
-        (RED, 'Красный'),
-    ]
     name = models.CharField(max_length=200, unique=True)
-    color = models.CharField(max_length=7, unique=True, choices=COLOR_CHOICES)
+    color = models.CharField(max_length=7, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
@@ -35,6 +36,11 @@ class Ingredient(models.Model):
         max_length=200,
         help_text='Единица измерения',
     )
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.name

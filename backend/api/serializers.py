@@ -5,13 +5,14 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (
     Favorite, Ingredient, IngredientAmount, Recipe,
-    ShoppingCart, Tag,
+    ShoppingCart, Tag, COLOR_CHOICES
 )
 from users.models import Subscribe
 from users.serializers import CustomUserSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
+    color = serializers.ChoiceField(choices=COLOR_CHOICES)
 
     class Meta:
         model = Tag
