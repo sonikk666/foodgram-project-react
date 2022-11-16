@@ -1,4 +1,7 @@
+import re
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 User = get_user_model()
@@ -11,9 +14,19 @@ COLOR_CHOICES = [
 ]
 
 
+def validate_hex_color(value):
+    match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', value)
+    if not match:
+        raise ValidationError(
+            f'Проверьте соответсвует ли код {value} цвету по hex-таблице'
+        )
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    color = models.CharField(max_length=7, unique=True)
+    color = models.CharField(
+        max_length=7, unique=True, validators=[validate_hex_color],
+    )
     slug = models.SlugField(max_length=200, unique=True)
 
     class Meta:

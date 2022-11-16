@@ -18,9 +18,9 @@ class RecipeAdmin(admin.ModelAdmin):
     def show_tags(self, recipe):
         # Вывод тегов в админке
         tags = ' #'.join(
-            Recipe.objects.values_list(
+            Recipe.objects.filter(name=recipe.name).values_list(
                 'tags__name', flat=True
-            ).filter(name=recipe.name)
+            )
         )
         return f'#{tags}'
 
@@ -33,7 +33,6 @@ class RecipeAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     search_fields = ('name',)
-    list_filter = ('name',)
 
 
 class TagAdmin(admin.ModelAdmin):
